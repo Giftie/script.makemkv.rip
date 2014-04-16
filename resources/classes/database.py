@@ -1,26 +1,15 @@
-"""
-MakeMKV CLI Wrapper
-
-This class acts as a python wrapper to the MakeMKV CLI.
-
-
-Released under the MIT license
-Copyright (c) 2012, Jason Millward
-
-@category   misc
-@version    $Id: 1.5, 2013-10-20 20:40:30 CST $;
-@author     Jason Millward <jason@jcode.me>
-@license    http://opensource.org/licenses/MIT
-"""
-
-import os
+import os, sys
 import sqlite3
+
+__script__               = sys.modules[ "__main__" ].__script__
+__scriptID__             = sys.modules[ "__main__" ].__scriptID__
+__addon_data__           = sys.modules[ "__main__" ].__addon_data__
 
 class database(object):
 
     def __init__(self):
         DATABASE = 'autoripper.db'
-        REAL_PATH = os.path.dirname(os.path.realpath(__file__))
+        REAL_PATH = __addon_data__
 
         self.con = sqlite3.connect('%s/../%s' % (REAL_PATH, DATABASE))
 
