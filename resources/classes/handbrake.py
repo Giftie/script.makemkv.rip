@@ -1,17 +1,19 @@
-"""
-HandBrake CLI Wrapper + Queue Handler
-
-This class acts as a python wrapper to the HandBrake CLI.
-
-
-Released under the MIT license
-Copyright (c) 2012, Jason Millward
-
-@category   misc
-@version    $Id: 1.5, 2013-10-20 20:40:30 CST $;
-@author     Jason Millward <jason@jcode.me>
-@license    http://opensource.org/licenses/MIT
-"""
+###
+#HandBrake CLI Wrapper + Queue Handler
+#
+#This class acts as a python wrapper to the HandBrake CLI.
+#
+#
+#Released under the MIT license
+#Copyright (c) 2012, Jason Millward
+#
+#@category   misc
+#@version    $Id: 1.5, 2013-10-20 20:40:30 CST $;
+#@author     Jason Millward <jason@jcode.me>
+#@license    http://opensource.org/licenses/MIT
+###
+#
+#XBMC Addon by Matt De Young(giftie)
 
 import os
 import subprocess
