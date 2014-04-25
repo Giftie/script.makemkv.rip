@@ -2,27 +2,28 @@
     <!-- Settings -->
     <category label="32010">
         <setting type="lsep" label="32010" />
-        <setting id="override_addon_data_folder" label="32020" default="false"/>
-        <setting id="temp_folder" label="32021" default="/home/.xbmc/userdata/addon_data/script.makemkv.rip" />
-        <setting id="final_destination_folder" label="32022" default="" />
-        <setting id="notify_upon_disc_insertion" label="32023" default="true" />
-        <setings id="eject_disc_upon_completion" label="32024" default="true" />
+        <setting id="movie_disc_insertion" type="labelenum"  label="32043" lvalues="32044|32045|32046" default="32046" />
+        <setting id="eject_disc_upon_completion" type="bool" label="32024" default="true" visible="!eq(-1,0)" enable="!eq(-1,0)" />
+        <setting id="notify_upon_completion" type="bool" label="" default="false" visible="!eq(-2,0)" enable="!eq(-2,0)" />
+        <setting id="override_addon_data_folder" type="bool" label="32020" default="false" visible="!eq(-3,0)" enable="!eq(-3,0)" />
+        <setting id="temp_folder" label="32021" type="folder" default="/home/.xbmc/userdata/addon_data/script.makemkv.rip" visble="!eq(-1,false) + !eq(-4,0)" enable="!eq(-1,false) + !eq(-4,0)" />
+        <setting id="final_destination_folder" type="folder" label="32022" default="" visible="!eq(-5,0)" enable="!eq(-5,0)" />
         <!-- MakeMKV Settings -->
         <setting type="lsep" label="32011" />
-        <setting id="mkv_folder" label="32027" default="" />
-        <setting id="mkv_min_length" label="32028" default="3600" />
-        <setting id="mkv_cache" label="32029" default="1024" />
-        <setting id="mkv_promt_on_multiple" label="32030" default="true" />
+        <setting id="mkv_folder" type="folder" label="32027" default="" />
+        <setting id="mkv_min_length" type="number" label="32028" default="3600" />
+        <setting id="mkv_cache" type="number" label="32029" default="1024" />
+        <setting id="mkv_prompt_on_multiple" type="bool" label="32030" default="true" />
         <!-- FileBot Settings -->
         <setting type="lsep" label="32013" />
-        <setting id="use_filebot" label="32025" default="true" />
-        <setting id="filebot_folder" label="32033" default="" />
-        <setting id="filebot_cli" label="32034" default="" />
+        <setting id="use_filebot" type="bool" label="32025" default="true" />
+        <setting id="filebot_folder" type="folder" label="32033" default="" visible="!eq(-1,false)" enable="!eq(-1,false)" />
+        <setting id="filebot_cli" type="text" label="32034" default="" visible="!eq(-2,false)" enable="!eq(-2,false)" />
         <!-- Handbrake Settings -->
         <setting type="lsep" label="32012" />
-        <setting id="use_handbrake" label="32026" default="false" />
-        <setting id="handbrake_folder" label="32031" default="" />
-        <setting id="handbrake_cli" "32032" default="" />
+        <setting id="use_handbrake" type="bool" label="32026" default="false" />
+        <setting id="handbrake_folder" type="folder" label="32031" default="" visible="!eq(-1,false)" enable="!eq(-1,false)" />
+        <setting id="handbrake_cli" type="text" label="32032" default="" visible="!eq(-2,false)" enable="!eq(-2,false)" />
     </category>
 </settings>
 

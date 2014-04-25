@@ -1,5 +1,17 @@
 import os, sys
+import xbmc, xbmcaddon
 from classes import handbrake, logger, makemkv, stopwatch
+
+__addon__                = xbmcaddon.Addon( "service.makemkv.rip" )
+__addon_name__           = __addon__.getAddonInfo( 'name' )
+__addonID__              = __addon__.getAddonInfo( 'id' )
+__addon_author__         = __addon__.getAddonInfo( 'author' )
+__addon_version__        = __addon__.getAddonInfo( 'version' )
+__addon_data__           = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode('utf-8')
+__addon_path__           = xbmc.translatePath( __addon__.getAddonInfo('path') ).decode('utf-8')
+__language__             = __addon__.getLocalizedString( __addon__ )
+#sys.path.append( os.path.join( __addon_path__, "resources", "lib" ) )
+from resources.lib import utils
 
 class makeMKV(object):
     def __init__(self, name, debug):
@@ -91,3 +103,8 @@ class makeMKV(object):
 
         else:
             log.info( "Queue does not exist or is empty")
+            
+if ( __name__ == "__main__" ):
+    utils.log( "############################################################", xbmc.LOGNOTICE )
+    utils.log( "#  MakeMKV Rip Started                                     #", xbmc.LOGNOTICE )
+    

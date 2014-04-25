@@ -111,23 +111,23 @@ msgid "Your MakeMKV version is too old.[CR]Please download the latest version at
 msgstr ""
 
 msgctxt "#32042"
-msgid ""
+msgid "Notify upon completion of rip"
 msgstr ""
 
 msgctxt "#32043"
-msgid ""
+msgid "Upon the detection of Movie in Optical Drive, perform the following:"
 msgstr ""
 
 msgctxt "#32044"
-msgid ""
+msgid "Nothing"
 msgstr ""
 
 msgctxt "#32045"
-msgid ""
+msgid "Rip"
 msgstr ""
 
 msgctxt "#32046"
-msgid ""
+msgid "Notify"
 msgstr ""
 
 msgctxt "#32047"

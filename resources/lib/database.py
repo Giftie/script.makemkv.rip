@@ -16,8 +16,8 @@
 import os, sys
 import sqlite3
 
-__script__               = sys.modules[ "__main__" ].__script__
-__scriptID__             = sys.modules[ "__main__" ].__scriptID__
+__addon__                = sys.modules[ "__main__" ].__addon__
+__addonID__              = sys.modules[ "__main__" ].__addonID__
 __addon_data__           = sys.modules[ "__main__" ].__addon_data__
 
 class database(object):
