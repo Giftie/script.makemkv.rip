@@ -1,0 +1,28 @@
+<settings>
+    <!-- Settings -->
+    <category label="32010">
+        <setting type="lsep" label="32010" />
+        <setting id="override_addon_data_folder" label="32020" default="false"/>
+        <setting id="temp_folder" label="32021" default="/home/.xbmc/userdata/addon_data/script.makemkv.rip" />
+        <setting id="final_destination_folder" label="32022" default="" />
+        <setting id="notify_upon_disc_insertion" label="32023" default="true" />
+        <setings id="eject_disc_upon_completion" label="32024" default="true" />
+        <!-- MakeMKV Settings -->
+        <setting type="lsep" label="32011" />
+        <setting id="mkv_folder" label="32027" default="" />
+        <setting id="mkv_min_length" label="32028" default="3600" />
+        <setting id="mkv_cache" label="32029" default="1024" />
+        <setting id="mkv_promt_on_multiple" label="32030" default="true" />
+        <!-- FileBot Settings -->
+        <setting type="lsep" label="32013" />
+        <setting id="use_filebot" label="32025" default="true" />
+        <setting id="filebot_folder" label="32033" default="" />
+        <setting id="filebot_cli" label="32034" default="" />
+        <!-- Handbrake Settings -->
+        <setting type="lsep" label="32012" />
+        <setting id="use_handbrake" label="32026" default="false" />
+        <setting id="handbrake_folder" label="32031" default="" />
+        <setting id="handbrake_cli" "32032" default="" />
+    </category>
+</settings>
+

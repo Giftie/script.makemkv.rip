@@ -46,14 +46,7 @@ Options:
 import os
 import sys
 import yaml
-from classes import docopt, handbrake, logger, makemkv, stopwatch
-from tendo import singleton
-
-__version__="1.6"
-
-me = singleton.SingleInstance()
-DIR = os.path.dirname(os.path.realpath(__file__))
-CONFIG_FILE = "%s/settings.cfg" % DIR
+from classes import handbrake, logger, makemkv, stopwatch
 
 def eject(drive):
     """
@@ -91,8 +84,8 @@ def eject(drive):
 
     except Exception as ex:
         log.error("Could not detect OS or eject CD tray")
-        log.ex("An exception of type %s occured." % type(ex).__name__)
-        log.ex("Args: \r\n %s" % ex.args)
+        log.error("An exception of type %s occured." % type(ex).__name__)
+        log.error("Args: \r\n %s" % ex.args)
 
     finally:
         del log

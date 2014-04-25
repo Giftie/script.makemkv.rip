@@ -7,12 +7,12 @@ class logger(object):
 
     def __init__(self, name, debug):
         if debug == True:
-            logLevel = xbmc.LOGDEBUG
+            self.logLevel = xbmc.LOGDEBUG
         else:
-            logLevel = xbmc.LOGNOTICE
+            self.logLevel = xbmc.LOGNOTICE
 
     def log( self, text ):
-        if type( text).__name__=='unicode':
+        if type( text ).__name__=='unicode':
             text = text.encode('utf-8')
         message = ('[%s] - %s' % ( __scriptname__ ,text.__str__() ) )
         xbmc.log( msg=message, level=self.logLevel )

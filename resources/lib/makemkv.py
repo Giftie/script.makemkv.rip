@@ -19,6 +19,7 @@ import re
 import csv
 import database
 import logger
+import xbmcvfs
 
 class makeMKV(object):
     """
@@ -138,6 +139,7 @@ class makeMKV(object):
         if proc.stderr is not None:
             output = proc.stderr.read()
             if len(output) is not 0:
+                # TODO: Need pop up for user
                 self.log.error("MakeMKV encountered the following error: ")
                 self.log.error(output)
                 return False
@@ -192,12 +194,14 @@ class makeMKV(object):
         output = proc.stderr.read()
         if proc.stderr is not None:
             if len(output) is not 0:
+                # TODO: Need pop up for user
                 self.log.error("MakeMKV encountered the following error: ")
                 self.log.error(output)
                 return []
 
         output = proc.stdout.read()
         if "This application version is too old." in output:
+            # TODO: Need pop up for user
             self.log.error("Your MakeMKV version is too old." \
                 "Please download the latest version at http://www.makemkv.com" \
                 " or enter a registration key to continue using MakeMKV.")
@@ -243,7 +247,7 @@ class makeMKV(object):
                 'info',
                 'disc:%d' % self.discIndex,
                 '--minlength=%d' % self.minLength,
-                '--messages=/tmp/makemkvMessages'
+                '--messages=%s/makemkvMessages' % self.temp_path
             ],
             stderr=subprocess.PIPE
         )
@@ -251,6 +255,7 @@ class makeMKV(object):
         output = proc.stderr.read()
         if proc.stderr is not None:
             if len(output) is not 0:
+                # TODO: need pop up for user
                 self.log.error("MakeMKV encountered the following error: ")
                 self.log.error(output)
                 return False
@@ -272,21 +277,22 @@ class makeMKV(object):
                 toReturn    (List)
         """
         toReturn = []
-        with open('/tmp/makemkvMessages', 'r') as messages:
-            for line in messages:
-                if line[:len(search)] == search:
-                    values = line.replace("%s:" % search, "").strip()
+        f = xbmcvfs.File('%s/makemkvMessages' % self.temp_path)
+        messages = f.read()
+        for line in messages:
+            if line[:len(search)] == search:
+                values = line.replace("%s:" % search, "").strip()
 
-                    cr = csv.reader([values])
+                cr = csv.reader([values])
 
-                    if searchIndex is not None:
-                        for row in cr:
-                            if int(row[0]) == int(searchIndex):
-                                #print row
-                                toReturn.append(row[3])
-                    else:
-                        for row in cr:
-                            toReturn.append(row[0])
+                if searchIndex is not None:
+                    for row in cr:
+                        if int(row[0]) == int(searchIndex):
+                            #print row
+                            toReturn.append(row[3])
+                else:
+                    for row in cr:
+                        toReturn.append(row[0])
 
         return toReturn
 
