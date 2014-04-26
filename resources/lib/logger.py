@@ -3,6 +3,12 @@
 import xbmc
 import sys
 
+__addon__                = sys.modules[ "__main__" ].__addon__
+__addonID__              = sys.modules[ "__main__" ].__addonID__
+__addon_name__           = sys.modules[ "__main__" ].__addon_name__
+__addon_data__           = sys.modules[ "__main__" ].__addon_data__
+__addon_path__           = sys.modules[ "__main__" ].__addon_path__
+
 class logger(object):
 
     def __init__(self, name, debug):
@@ -14,7 +20,7 @@ class logger(object):
     def log( self, text ):
         if type( text ).__name__=='unicode':
             text = text.encode('utf-8')
-        message = ('[%s] - %s' % ( __scriptname__ ,text.__str__() ) )
+        message = ('[%s] - %s' % ( __addon_name__ ,text.__str__() ) )
         xbmc.log( msg=message, level=self.logLevel )
         
     def debug(self, msg):

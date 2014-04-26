@@ -2,12 +2,13 @@
 import sys, os, traceback, re
 import xbmcgui, xbmc, xbmcaddon, xbmcvfs
 
-__script__               = sys.modules[ "__main__" ].__script__
-__scriptID__             = sys.modules[ "__main__" ].__scriptID__
+__addon__                = sys.modules[ "__main__" ].__addon__
+__addonID__              = sys.modules[ "__main__" ].__addonID__
+__addon_name             = sys.modules[ "__main__" ].__addon_name__
 __addon_data__           = sys.modules[ "__main__" ].__addon_data__
 __addon_path__           = sys.modules[ "__main__" ].__addon_path__
 settings_path            = os.path.join( __addon_data__, "settings.xml" )
-sys.path.append( os.path.join( __addon_path__, "lib" ) )
+#sys.path.append( os.path.join( __addon_path__, "lib" ) )
 
 import utils
 
@@ -15,7 +16,7 @@ true = True
 false = False
 null = None
 
-class settings():
+class Settings():
     def __init__( self, *args, **kwargs ):
         utils.log( 'settings() - __init__' )
         self.start()
@@ -23,28 +24,28 @@ class settings():
     def start( self ):
         utils.log('settings() - start')
         self.setting_values = self.read_settings_xml()
-        self.general_settings            = { "movie_disc_insertion": ( "Nothing", "Rip", "Notify" )[ int( __addon__.getSetting( "movie_disc_insertion" ) ) ],
-                                      "eject_disc_upon_completion": eval( __addon__.getSetting( "eject_disc_upon_completion" ) ),
-                                          "notify_upon_completion": eval( __addon__.getSetting( "notify_upon_completion" ) ),
-                                      "override_addon_data_folder": eval( __addon__.getSetting( "override_addon_data_folder" ) ),
-                                                     "temp_folder": xbmc.translatePath( __addon__.getSetting( "temp_folder" ) ).decode('utf-8'),
-                                        "final_destination_folder": xbmc.translatePath( __addon__.getSetting( "final_destination_folder" ) ).decode('utf-8'),
+        self.general_settings            = { "movie_disc_insertion": __addon__.getSetting( "movie_disc_insertion" ),
+                                       "eject_disc_upon_completion": eval( __addon__.getSetting( "eject_disc_upon_completion" ) ),
+                                           "notify_upon_completion": eval( __addon__.getSetting( "notify_upon_completion" ) ),
+                                       "override_addon_data_folder": eval( __addon__.getSetting( "override_addon_data_folder" ) ),
+                                                      "temp_folder": xbmc.translatePath( __addon__.getSetting( "temp_folder" ) ).decode('utf-8'),
+                                         "final_destination_folder": xbmc.translatePath( __addon__.getSetting( "final_destination_folder" ) ).decode('utf-8'),
                                            }
 
-        self.makemkv_settings            = {          "mkv_folder": xbmc.translatePath( __addon__.getSetting( "mkv_folder" ) ).decode('utf-8'),
-                                                  "mkv_min_length": int( __addon__.getSetting( "mkv_min_length" ) ),
-                                                       "mkv_cache": int( __addon__.getSetting( "mkv_cache" ) ),
-                                          "mkv_prompt_on_multiple": eval( __addon__.getSetting( "mkv_prompt_on_multiple" ) ),
+        self.makemkv_settings            = {           "mkv_folder": xbmc.translatePath( __addon__.getSetting( "mkv_folder" ) ).decode('utf-8'),
+                                                   "mkv_min_length": int( __addon__.getSetting( "mkv_min_length" ) ),
+                                                        "mkv_cache": int( __addon__.getSetting( "mkv_cache" ) ),
+                                           "mkv_prompt_on_multiple": eval( __addon__.getSetting( "mkv_prompt_on_multiple" ) ),
                                            }
                                           
-        self.handbrake_settings          = {       "use_handbrake": eval( __addon__.getSetting( "use_handbrake" ) ),
-                                                "handbrake_folder": xbmc.translatePath( __addon__.getSetting( "handbrake_folder" ).decode('utf-8'),
-                                                   "handbrake_cli": __addon__.getSetting( "handbrake_cli" ),
+        self.handbrake_settings          = {        "use_handbrake": eval( __addon__.getSetting( "use_handbrake" ) ),
+                                                 "handbrake_folder": xbmc.translatePath( __addon__.getSetting( "handbrake_folder" ) ).decode('utf-8'),
+                                                    "handbrake_cli": __addon__.getSetting( "handbrake_cli" ),
                                            }
                                            
-        self.filebot_settings            = {         "use_filebot": eval( __addon__.getSetting( "use_filebot" ) ),
-                                                  "filebot_folder": xbmc.translatePath( __addon__.getSetting( "filebot_folder" ).decode('utf-8'),
-                                                     "filebot_cli": __addon__.getSetting( "filebot_cli" ),
+        self.filebot_settings            = {          "use_filebot": eval( __addon__.getSetting( "use_filebot" ) ),
+                                                   "filebot_folder": xbmc.translatePath( __addon__.getSetting( "filebot_folder" ) ).decode('utf-8'),
+                                                      "filebot_cli": __addon__.getSetting( "filebot_cli" ),
                                            }
 
     def read_settings_xml( self ):

@@ -12,6 +12,9 @@
 ###
 #
 # XBMC addon version by Matt De Young(giftie)
+import sys
+__addon_data__           = sys.modules[ "__main__" ].__addon_data__
+__addon_path__           = sys.modules[ "__main__" ].__addon_path__
 
 import subprocess
 import os
@@ -26,7 +29,7 @@ class makeMKV(object):
         This class acts as a python wrapper to the MakeMKV CLI.
     """
 
-    def __init__(self, config):
+    def __init__(self, makemkv_settings):
         """
             Initialises the variables that will be used in this class
 
@@ -40,9 +43,11 @@ class makeMKV(object):
         self.movieName = ""
         self.path = ""
         self.movieName = ""
-        self.minLength = int(config['minLength'])
-        self.cacheSize = int(config['cache'])
-        self.log = logger.logger("makemkv", config['debug'])
+        self.temp_path = __addon_data__
+        self.makemkvcon_path = os.path.join( makemkv_settings[ "mkv_folder" ], "makemkvcon" )
+        self.minLength = makemkv_settings[ "mkv_min_length" ]
+        self.cacheSize = makemkv_settings[ "mkv_cache" ]
+        self.log = logger.logger("makemkv", True)
 
     def _queueMovie(self):
         """
@@ -58,13 +63,13 @@ class makeMKV(object):
         db = database.database()
         movie = ""
 
-        os.chdir('%s/%s' % (self.path, self.movieName))
-        for files in os.listdir("."):
-            if files.endswith(".mkv"):
-                movie = files
+        path = os.path.join( self.path, self.movieName )
+        folders, files = xbmcvfs.listdir( path )
+        for file in files:
+            if file.endswith(".mkv"):
+                movie = file
                 break
 
-        path = "%s/%s" % (self.path, self.movieName)
         outMovie = "%s.mkv" % self.movieName
         db.insert(path, inMovie=movie, outMovie=outMovie)
 
@@ -93,7 +98,8 @@ class makeMKV(object):
         tmpName = tmpName.replace("\"", "").replace("_", " ")
 
         # Clean up the edges and remove whitespace
-        self.movieName = tmpName.strip()
+        self.movieName = tmpName.strip().replace( " ", "_" )
+        
 
 
     def setTitle(self, movieName):
@@ -118,9 +124,9 @@ class makeMKV(object):
         """
         self.path = path
 
-        fullPath = '%s/%s' % (self.path, self.movieName)
+        fullPath = os.path.join( self.path, self.movieName )
         command = [
-            'makemkvcon',
+            self.makemkvcon_path,
             'mkv',
             'disc:%d' % self.discIndex,
             '0',
@@ -186,7 +192,7 @@ class makeMKV(object):
         """
         drives = []
         proc = subprocess.Popen(
-            ['makemkvcon', '-r', 'info'],
+            [self.makemkvcon_path, '-r', 'info'],
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
@@ -242,7 +248,7 @@ class makeMKV(object):
 
         proc = subprocess.Popen(
             [
-                'makemkvcon',
+                self.makemkvcon_path,
                 '-r',
                 'info',
                 'disc:%d' % self.discIndex,

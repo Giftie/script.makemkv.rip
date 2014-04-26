@@ -27,7 +27,7 @@ msgstr ""
 #Category Heading strings
 
 msgctxt "#32010"
-msgid "Settings"
+msgid "General Settings"
 msgstr ""
 
 msgctxt "#32011"
@@ -43,7 +43,7 @@ msgid "FileBot Settings"
 msgstr ""
 
 msgctxt "#32020"
-msgid "Override default temporary folder(userdata/addon_data/script.makemkv.rip"
+msgid "Override default temporary folder"
 msgstr ""
 
 msgctxt "#32021"
@@ -62,7 +62,7 @@ msgctxt "#32024"
 msgid "Eject Disc upon completion"
 msgstr ""
 
-msgctxt "#320025"
+msgctxt "#32025"
 msgid "Use FileBot to gather Artwork and create NFO file"
 msgstr ""
 
@@ -115,7 +115,7 @@ msgid "Notify upon completion of rip"
 msgstr ""
 
 msgctxt "#32043"
-msgid "Upon the detection of Movie in Optical Drive, perform the following:"
+msgid "Upon the detection of Movie in Optical Drive:"
 msgstr ""
 
 msgctxt "#32044"
