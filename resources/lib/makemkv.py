@@ -29,7 +29,7 @@ class makeMKV(object):
         This class acts as a python wrapper to the MakeMKV CLI.
     """
 
-    def __init__(self, makemkv_settings):
+    def __init__(self, general_settings):
         """
             Initialises the variables that will be used in this class
 
@@ -43,10 +43,10 @@ class makeMKV(object):
         self.movieName = ""
         self.path = ""
         self.movieName = ""
-        self.temp_path = __addon_data__
-        self.makemkvcon_path = os.path.join( makemkv_settings[ "mkv_folder" ], "makemkvcon" )
-        self.minLength = makemkv_settings[ "mkv_min_length" ]
-        self.cacheSize = makemkv_settings[ "mkv_cache" ]
+        self.temp_path = general_settings[ "temp_folder" ]
+        self.makemkvcon_path = os.path.join( general_settings[ "mkv_folder" ], "makemkvcon" )
+        self.minLength = general_settings[ "mkv_min_length" ]
+        self.cacheSize = general_settings[ "mkv_cache" ]
         self.log = logger.logger("makemkv", True)
 
     def _queueMovie(self):
@@ -60,6 +60,7 @@ class makeMKV(object):
             Outputs:
                 None
         """
+        self.log.info( "Storing movie in to queue database" )
         db = database.database()
         movie = ""
 
@@ -283,7 +284,7 @@ class makeMKV(object):
                 toReturn    (List)
         """
         toReturn = []
-        f = xbmcvfs.File( os.path.join( self.temp_path, "makemkvMessages" )
+        f = xbmcvfs.File( os.path.join( self.temp_path, "makemkvMessages" ) )
         messages = f.read()
         for line in messages:
             if line[:len(search)] == search:

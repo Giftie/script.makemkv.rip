@@ -30,20 +30,14 @@ class Settings():
                                        "override_addon_data_folder": eval( __addon__.getSetting( "override_addon_data_folder" ) ),
                                                       "temp_folder": xbmc.translatePath( __addon__.getSetting( "temp_folder" ) ).decode('utf-8'),
                                          "final_destination_folder": xbmc.translatePath( __addon__.getSetting( "final_destination_folder" ) ).decode('utf-8'),
-                                           }
-
-        self.makemkv_settings            = {           "mkv_folder": xbmc.translatePath( __addon__.getSetting( "mkv_folder" ) ).decode('utf-8'),
+                                                       "mkv_folder": xbmc.translatePath( __addon__.getSetting( "mkv_folder" ) ).decode('utf-8'),
                                                    "mkv_min_length": int( __addon__.getSetting( "mkv_min_length" ) ),
                                                         "mkv_cache": int( __addon__.getSetting( "mkv_cache" ) ),
                                            "mkv_prompt_on_multiple": eval( __addon__.getSetting( "mkv_prompt_on_multiple" ) ),
-                                           }
-                                          
-        self.handbrake_settings          = {        "use_handbrake": eval( __addon__.getSetting( "use_handbrake" ) ),
+                                                    "use_handbrake": eval( __addon__.getSetting( "use_handbrake" ) ),
                                                  "handbrake_folder": xbmc.translatePath( __addon__.getSetting( "handbrake_folder" ) ).decode('utf-8'),
                                                     "handbrake_cli": __addon__.getSetting( "handbrake_cli" ),
-                                           }
-                                           
-        self.filebot_settings            = {          "use_filebot": eval( __addon__.getSetting( "use_filebot" ) ),
+                                                      "use_filebot": eval( __addon__.getSetting( "use_filebot" ) ),
                                                    "filebot_folder": xbmc.translatePath( __addon__.getSetting( "filebot_folder" ) ).decode('utf-8'),
                                                       "filebot_cli": __addon__.getSetting( "filebot_cli" ),
                                            }

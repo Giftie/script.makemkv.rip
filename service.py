@@ -12,34 +12,51 @@ __language__             = __addon__.getLocalizedString
 #sys.path.append( os.path.join( __addon_path__, "resources", "lib" ) )
 from resources.lib import utils, settings, stopwatch, logger
 _settings = settings.Settings()
+original_settings = _settings.read_settings_xml()
 general_settings   = _settings.general_settings
-makemkv_settings   = _settings.makemkv_settings
-handbrake_settings = _settings.handbrake_settings
-filebot_settings   = _settings.filebot_settings
+#makemkv_settings   = _settings.makemkv_settings
+#handbrake_settings = _settings.handbrake_settings
+#filebot_settings   = _settings.filebot_settings
 
 from resources.lib import makemkv, handbrake
 
+class CE_Monitor( xbmc.Monitor ):
+    def __init__(self, *args, **kwargs):
+        xbmc.Monitor.__init__(self)
+        self.original_settings = _settings.read_settings_xml()
+        self.enabled = kwargs['enabled']
+        self.update_settings = kwargs['update_settings']
+        
+    def onSettingsChanged( self ):
+        try:
+            xbmc.sleep( 10000 )
+            if not self.original_settings == _settings.read_settings_xml():
+                self.new_settings = self.update_settings( self.original_settings )
+                self.original_settings = self.new_settings
+        except:
+            traceback.print_exc()
+            
 class makeMKV():
     def __init__(self, *args, **kwargs):
         return
         
-    def rip(self, dvds):        
+    def rip(self, discs):        
         log = logger.logger( "Rip", True )
 
         mkv_save_path = general_settings[ "temp_folder" ]
         mkv_tmp_output = general_settings[ "temp_folder" ]
 
-        mkv_api = makemkv.makeMKV( makemkv_settings )
+        mkv_api = makemkv.makeMKV( general_settings )
 
         log.debug("Ripping started successfully")
         
-        log.debug("%d Movie Disc%s found" % ( len(dvds), ( "", "s" )[len(dvds) > 1 ) )
+        log.debug("%d Movie Disc%s found" % ( len(discs), ( "", "s" )[len(discs) > 1] ) )
 
-        if (len(dvds) > 0):
+        if (len(discs) > 0):
             # Best naming convention ever
-            for dvd in dvds:
-                mkv_api.setTitle(dvd["discTitle"])
-                mkv_api.setIndex(dvd["discIndex"])
+            for disc in discs:
+                mkv_api.setTitle(disc["discTitle"])
+                mkv_api.setIndex(disc["discIndex"])
 
                 movie_title = mkv_api.getTitle()
 
@@ -52,24 +69,23 @@ class makeMKV():
                         status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                     if status:
-                        if makemkv_settings[ "eject_disc_upon_completion" ]:
-                            #place eject here
-                            pass
-
+                        if general_settings[ "eject_disc_upon_completion" ]:
+                            xbmc.executebuiltin( "EjectTray()" )
+                            
                         log.info("It took %s minute(s) to complete the ripping of %s" %
                              (t.minutes, movie_title)
                         )
 
                     else:
-                        log.info("MakeMKV did not did not complete successfully")
-                        log.info("See log for more details")
-                        log.debug("Movie title: %s" % movie_title)
+                        log.error("MakeMKV did not did not complete successfully")
+                        log.error("See log for more details")
+                        log.error("Movie title: %s" % movie_title)
 
                 else:
                     log.info("Movie folder %s already exists" % movie_title)
 
         else:
-            log.info("Could not find any DVDs in drive list")
+            log.info("Could not find any Movie Discs in drive list")
 
     def compress(config):
         """
@@ -106,13 +122,13 @@ class makeMKV():
             log.info( "Queue does not exist or is empty")
            
 def _daemon():
+    previous_getDVDState = 4 # this should insure only on rip is done
     while ( not xbmc.abortRequested ):
         xbmc.sleep( 250 )
-        previous_getDVDState = 4 # this should insure only on rip is done
         if xbmc.getDVDState() == 4 and previous_getDVDState != 4:
             utils.log( "Disc Detected, Checking for Movie Disc(s)", xbmc.LOGNOTICE )
             previous_getDVDState = xbmc.getDVDState()
-            disc = makemkv.makeMKV( makemkv_settings ).findDisc( general_settings[ "temp_folder" ] )
+            disc = makemkv.makeMKV( general_settings ).findDisc( general_settings[ "temp_folder" ] )
             if disc:
                 utils.log( "Movie Disc Detected", xbmc.LOGNOTICE )
                 if general_settings[ "movie_disc_insertion" ] == "Rip":
@@ -122,13 +138,28 @@ def _daemon():
                 elif general_settings[ "movie_disc_insertion" ] == "Stream":
                     pass
                 else: #do nothing
-                    pass  
+                    pass
+        elif xbmc.getDVDState() !=4:
+            previous_getDVDState = xbmc.getDVDState()
+            
+def update_settings( original_settings ):
+    utils.log( "service.py - Settings loaded" )
+    new_settings = settings.read_settings_xml()
+    if not original_settings == new_settings:
+        settings.store_settings()
+        original_settings = new_settings
+        settings.settings_to_log()
+        settings.start()
+        general_settings = _settings.general_settings
+    return original_settings
 
 if ( __name__ == "__main__" ):
     utils.log( "############################################################", xbmc.LOGNOTICE )
     utils.log( "#  MakeMKV Rip Started                                     #", xbmc.LOGNOTICE )
     utils.log( "#                                                          #", xbmc.LOGNOTICE )
-    utils.log( "#     Version: %-41s #" % __addon_version__, xbmc.LOGNOTICE )
+    utils.log( "#     Version: %-43s #" % __addon_version__, xbmc.LOGNOTICE )
     utils.log( "############################################################", xbmc.LOGNOTICE )
     _settings.settings_to_log()
+    Monitor = CE_Monitor( enabled = True, update_settings = update_settings )
     _daemon()
+    del Monitor
