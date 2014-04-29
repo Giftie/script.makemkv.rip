@@ -283,7 +283,7 @@ class makeMKV(object):
                 toReturn    (List)
         """
         toReturn = []
-        f = xbmcvfs.File('%s/makemkvMessages' % self.temp_path)
+        f = xbmcvfs.File( os.path.join( self.temp_path, "makemkvMessages" )
         messages = f.read()
         for line in messages:
             if line[:len(search)] == search:

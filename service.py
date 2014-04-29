@@ -23,7 +23,7 @@ class makeMKV():
     def __init__(self, *args, **kwargs):
         return
         
-    def rip(self):        
+    def rip(self, dvds):        
         log = logger.logger( "Rip", True )
 
         mkv_save_path = general_settings[ "temp_folder" ]
@@ -32,11 +32,8 @@ class makeMKV():
         mkv_api = makemkv.makeMKV( makemkv_settings )
 
         log.debug("Ripping started successfully")
-        log.debug("Checking for DVDs")
-
-        dvds = mkv_api.findDisc(mkv_tmp_output)
-
-        log.debug("%d DVDs found" % len(dvds))
+        
+        log.debug("%d Movie Disc%s found" % ( len(dvds), ( "", "s" )[len(dvds) > 1 ) )
 
         if (len(dvds) > 0):
             # Best naming convention ever
@@ -111,13 +108,21 @@ class makeMKV():
 def _daemon():
     while ( not xbmc.abortRequested ):
         xbmc.sleep( 250 )
-        if xbmc.getDVDState() == 4:
-            utils.log( "Disc Detected, Checking", xbmc.LOGNOTICE )
+        previous_getDVDState = 4 # this should insure only on rip is done
+        if xbmc.getDVDState() == 4 and previous_getDVDState != 4:
+            utils.log( "Disc Detected, Checking for Movie Disc(s)", xbmc.LOGNOTICE )
+            previous_getDVDState = xbmc.getDVDState()
             disc = makemkv.makeMKV( makemkv_settings ).findDisc( general_settings[ "temp_folder" ] )
-            
             if disc:
                 utils.log( "Movie Disc Detected", xbmc.LOGNOTICE )
-                makeMKV().rip()
+                if general_settings[ "movie_disc_insertion" ] == "Rip":
+                    makeMKV().rip( disc )
+                elif general_settings[ "movie_disc_insertion" ] == "Notify":
+                    pass
+                elif general_settings[ "movie_disc_insertion" ] == "Stream":
+                    pass
+                else: #do nothing
+                    pass  
 
 if ( __name__ == "__main__" ):
     utils.log( "############################################################", xbmc.LOGNOTICE )
