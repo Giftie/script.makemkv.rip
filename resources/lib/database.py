@@ -24,9 +24,8 @@ class database(object):
 
     def __init__(self):
         DATABASE = 'autoripper.db'
-        REAL_PATH = __addon_data__
-
-        self.con = sqlite3.connect('%s/../%s' % (REAL_PATH, DATABASE))
+        
+        self.con = sqlite3.connect( os.path.join( __addon_data__, DATABASE ) )
 
         if not self._tableExists():
             self._createStructure()
