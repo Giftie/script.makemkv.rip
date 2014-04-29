@@ -5,7 +5,7 @@
         <setting id="eject_disc_upon_completion" type="bool" label="32024" default="true" visible="!eq(-1,0)" enable="!eq(-1,0)" />
         <setting id="notify_upon_completion" type="bool" label="32042" default="false" visible="!eq(-2,0)" enable="!eq(-2,0)" />
         <setting id="override_addon_data_folder" type="bool" label="32020" default="false" visible="!eq(-3,0)" enable="!eq(-3,0)" />
-        <setting id="temp_folder" label="32021" type="folder" default="/home/.xbmc/userdata/addon_data/service.makemkv.rip" visible="!eq(-1,false) + !eq(-4,0)" enable="!eq(-1,false)" />
+        <setting id="temp_folder" label="32021" type="folder" default="special://profile/addon_data/service.makemkv.rip" visible="!eq(-1,false) + !eq(-4,0)" enable="!eq(-1,false)" />
         <setting id="final_destination_folder" type="folder" label="32022" default="" visible="!eq(-5,0)" enable="!eq(-5,0)" />
     </category>
     <!-- MakeMKV Settings -->
