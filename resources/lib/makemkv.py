@@ -216,11 +216,11 @@ class makeMKV(object):
             return []
 
         # Passed the simple tests, now check for disk drives
-
+        
         lines = output.split("\n")
         for line in lines:
             if line[:4] == "DRV:":
-                if "/dev/" in line:
+                if ("/dev/" in line) or ("\\\\CdRom" in line):
                     out = line.split(',')
 
                     if len(str(out[5])) > 3:
@@ -267,9 +267,9 @@ class makeMKV(object):
                 self.log.error(output)
                 return False
 
-        #self.readMKVMessages("TCOUNT")
-        #for titleNo in set(self.readMKVMessages("TINFO")):
-        #    print titleNo
+        self.readMKVMessages("TCOUNT")
+        for titleNo in set(self.readMKVMessages("TINFO")):
+            print titleNo
 
 
     def readMKVMessages(self, search, searchIndex = None):
@@ -285,8 +285,9 @@ class makeMKV(object):
         """
         toReturn = []
         f = xbmcvfs.File( os.path.join( self.temp_path, "makemkvMessages" ) )
-        messages = f.read()
+        messages = f.read().splitlines()
         for line in messages:
+            
             if line[:len(search)] == search:
                 values = line.replace("%s:" % search, "").strip()
 

@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, traceback
 import xbmc, xbmcaddon, xbmcvfs
 
 __addon__                = xbmcaddon.Addon( "service.makemkv.rip" )
@@ -9,14 +9,10 @@ __addon_version__        = __addon__.getAddonInfo( 'version' )
 __addon_data__           = xbmc.translatePath( __addon__.getAddonInfo('profile') ).decode('utf-8')
 __addon_path__           = xbmc.translatePath( __addon__.getAddonInfo('path') ).decode('utf-8')
 __language__             = __addon__.getLocalizedString
-#sys.path.append( os.path.join( __addon_path__, "resources", "lib" ) )
 from resources.lib import utils, settings, stopwatch, logger
 _settings = settings.Settings()
 original_settings = _settings.read_settings_xml()
 general_settings   = _settings.general_settings
-#makemkv_settings   = _settings.makemkv_settings
-#handbrake_settings = _settings.handbrake_settings
-#filebot_settings   = _settings.filebot_settings
 
 from resources.lib import makemkv, handbrake
 
@@ -127,6 +123,7 @@ def _daemon():
         xbmc.sleep( 250 )
         if xbmc.getDVDState() == 4 and previous_getDVDState != 4:
             utils.log( "Disc Detected, Checking for Movie Disc(s)", xbmc.LOGNOTICE )
+            xbmc.sleep( 3000 )
             previous_getDVDState = xbmc.getDVDState()
             disc = makemkv.makeMKV( general_settings ).findDisc( general_settings[ "temp_folder" ] )
             if disc:
@@ -136,6 +133,10 @@ def _daemon():
                 elif general_settings[ "movie_disc_insertion" ] == "Notify":
                     pass
                 elif general_settings[ "movie_disc_insertion" ] == "Stream":
+                    pass
+                elif general_settings[ "movie_disc_insertion" ] == "Ask":
+                    pass
+                elif general_settings[ "movie_disc_insertion" ] == "Backup":
                     pass
                 else: #do nothing
                     pass
