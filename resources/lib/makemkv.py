@@ -28,6 +28,18 @@ class makeMKV(object):
     """
         This class acts as a python wrapper to the MakeMKV CLI.
     """
+    
+    NEWLINE_CHAR = '\n'
+    ATTRIBUTE_IDS = { '0': 'Unknown',  '1': 'Type', '2': 'Name', '3': 'Lng Code', '4': 'Lng Name', '5': 'Codec ID', '6': 'Codec Short', '7': 'Codec Long',
+                      '8': 'Chapter Count', '9': 'Duration', '10': 'Disk Size', '11': 'Disk Size Bytes', '12': 'Stream Type Extension', '13': 'Bitrate',
+                      '14': 'Audio Channels Cnt', '15': 'Angle Info', '16': 'Source File Name', '17': 'Audio Sample Rate', '18': 'Audio Sample Size',
+                      '19': 'Video Size', '20': 'Video Aspect Ratio', '21': 'Video Frame Rate', '22': 'Stream Flags', '23': 'Date Time',
+                      '24': 'Original Title ID', '25': 'Segments Count', '26': 'Segments Map', '27': 'Output Filename', '28': 'Metadata Lng Code',
+                      '29': 'Metadata Lng Name', '30': 'Tree Info', '31': 'Panel Title', '32': 'Volume Name', '33': 'Order Weight', '34': 'Output Format',
+                      '35': 'Output Format Description', '36': 'MaxValue', '37': 'ap_iaPanelText', '38': 'ap_iaMkvFlags', '39': 'ap_iaMkvFlagsText', }
+    COL_PATTERN = re.compile(r'''((?:[^,"']|"[^"]*"|'[^']*')+)''')
+    RESERVED_CHAR_MAP = { '/':'-', '\\':'-', '?':' ', '%':' ', '*':' ',
+                         ':':'-', '|':'-', '"':' ', '<':' ', '>':' ', }
 
     def __init__(self, general_settings):
         """
@@ -49,6 +61,64 @@ class makeMKV(object):
         self.cacheSize = general_settings[ "mkv_cache" ]
         self.log = logger.logger("makemkv", True)
 
+    def disc_info(self, disc_id, thread_id=None, ):
+        info_out = {
+            'disc'  :   {},
+            'tracks':   {},
+            'disc_id':  disc_id,
+            'cmd'   :   'disc_info',
+        }
+        try:
+            disc_info = subprocess.check_output([
+                self.makemkvcon_path, '--noscan', '-r',
+                'info', 'dev:%s' % disc_id,
+                ])
+        except subprocess.CalledProcessError as e:
+            logging.error(e.output)
+            raise
+        track_id = -1
+        for line in disc_info.split(makeMKV.NEWLINE_CHAR):
+            split_line = makeMKV.COL_PATTERN.split(line)[1::2]
+            if len(split_line) > 1 and split_line[0] != 'TCOUNT':
+                if line[0] == 'C':  #<  Disc Info
+                    try:
+                        info_out['disc'][makeMKV.ATTRIBUTE_IDS[split_line[0].split(':')[-1]]] = split_line[-1].replace('"','')
+                    except KeyError:
+                        info_out['disc'][split_line[0].split(':')[-1]] = split_line[-1].replace('"','')
+                else:
+                    if line[0] == 'T':
+                        track_id = split_line[0].split(':')[-1]
+                        try:    #<  If new track_id, dim var
+                            track_info = info_out['tracks'][track_id]
+                        except KeyError:
+                            track_info = info_out['tracks'][track_id] = {'cnts':{'Subtitles':0,'Video':0,'Audio':0}}
+                        try:
+                            track_info[makeMKV.ATTRIBUTE_IDS[split_line[1]]] = split_line[-1].replace('"','')
+                        except Exception:
+                            track_info[split_line[1]] = split_line[-1].replace('"','')
+                    if line[0] == 'S':
+                        track_part_id = split_line[1]
+                        try:    #<  If new track_id, dim var
+                            info_out['tracks'][track_id]['track_parts']
+                        except KeyError:
+                            info_out['tracks'][track_id]['track_parts'] = {}
+                        try:    #<  If new track_id, dim var
+                            track_info = info_out['tracks'][track_id]['track_parts'][track_part_id]
+                        except KeyError:
+                            track_info = info_out['tracks'][track_id]['track_parts'][track_part_id] = {}
+                        try:
+                            track_info[makeMKV.ATTRIBUTE_IDS[split_line[2]]] = split_line[-1].replace('"','')
+                        except KeyError:
+                            track_info[split_line[2]] = split_line[-1].replace('"','')
+        #   Count the track parts
+        for track_id,track_info in info_out['tracks'].iteritems():
+            for part_id, track_part in track_info['track_parts'].iteritems():
+                try:
+                    info_out['tracks'][track_id]['cnts'][track_part['Type']] += 1
+                except KeyError:    #<  Type not avail, should be good to ignore?
+                    pass
+        return info_out
+        
     def _queueMovie(self):
         """
             Adds the recently ripped movie to the queue db for the compression
